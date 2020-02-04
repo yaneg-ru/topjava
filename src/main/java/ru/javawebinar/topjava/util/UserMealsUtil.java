@@ -35,11 +35,16 @@ public class UserMealsUtil {
 
         printBreakLine("filteredByCyclesOptional_2");
         List<UserMealWithExcessVer2> mealsToVer2 = filteredByCyclesOptional_2(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        mealsTo.forEach(System.out::println);
+        mealsToVer2.forEach(System.out::println);
 
         printBreakLine("filteredByStreams");
         mealsTo = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
+
+        printBreakLine("filteredByStreamsOptional_3");
+        mealsToVer2 = filteredByStreamsOptional(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsToVer2.forEach(System.out::println);
+
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
@@ -121,35 +126,20 @@ public class UserMealsUtil {
         if (meals == null || startTime == null || endTime == null) return null;
 
         List<UserMealWithExcessVer2> userMealWithExcesses = new ArrayList<>();
+        UserMealWithExcessVer2.setLimitCaloriesPerDay(caloriesPerDay);
+        UserMealWithExcessVer2.clearExcessPerDays();
 
-        int totalUserCaloriesPerDay = 0;
-        boolean needAdd;
-        LocalDate lastDate = meals.get(0).getDateTime().toLocalDate();
-
-        for (int i = 0; i < meals.size(); i++) {
-
-            totalUserCaloriesPerDay += meals.get(i).getCalories();
-            if (totalUserCaloriesPerDay > caloriesPerDay) {
-                UserMealWithExcessVer2.excessPerDays.put(meals.get(i).getDateTime().toLocalDate(), true);
-            } else {
-                UserMealWithExcessVer2.excessPerDays.put(meals.get(i).getDateTime().toLocalDate(), false);
-            }
-
-            needAdd = TimeUtil.isBetweenInclusive(meals.get(i).getDateTime().toLocalTime(), startTime, endTime);
-
-            if (i > meals.size() - 1 && lastDate.compareTo(meals.get(i + 1).getDateTime().toLocalDate()) != 0) {
-                totalUserCaloriesPerDay = 0;
-                lastDate = meals.get(i + 1).getDateTime().toLocalDate();
-            }
-
-            if (needAdd) userMealWithExcesses.add(
+        for (UserMeal meal : meals) {
+            userMealWithExcesses.add(
                     new UserMealWithExcessVer2(
-                            meals.get(i).getDateTime(),
-                            meals.get(i).getDescription(),
-                            meals.get(i).getCalories()
+                            meal.getDateTime(),
+                            meal.getDescription(),
+                            meal.getCalories()
                     ));
+            if (!TimeUtil.isBetweenInclusive(meal.getDateTime().toLocalTime(), startTime, endTime)) {
+                userMealWithExcesses.remove(userMealWithExcesses.size() - 1);
+            }
         }
-
         return userMealWithExcesses;
     }
 
@@ -177,6 +167,22 @@ public class UserMealsUtil {
                 .collect(Collectors.toList());
 
         return userMealWithExcesses;
+    }
+
+    public static List<UserMealWithExcessVer2> filteredByStreamsOptional(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+
+        if (meals == null || startTime == null || endTime == null) return null;
+        UserMealWithExcessVer2.setLimitCaloriesPerDay(caloriesPerDay);
+        UserMealWithExcessVer2.clearExcessPerDays();
+
+        return meals.stream()
+                .map(userMeal -> new UserMealWithExcessVer2(
+                        userMeal.getDateTime(),
+                        userMeal.getDescription(),
+                        userMeal.getCalories()
+                ))
+                .filter(userMeal -> TimeUtil.isBetweenInclusive(userMeal.getDateTime().toLocalTime(), startTime, endTime))
+                .collect(Collectors.toList());
     }
 
     public static void printBreakLine(String s) {
