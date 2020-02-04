@@ -1,31 +1,42 @@
 package ru.javawebinar.topjava.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
-public class UserMealWithExcess {
+public class UserMealWithExcessVer2 {
     private final LocalDateTime dateTime;
 
     private final String description;
 
     private final int calories;
 
-    private boolean excess;
+    public static Map<LocalDate,Boolean> excessPerDays = new HashMap<>();
 
-    public UserMealWithExcess(LocalDateTime dateTime, String description, int calories, boolean excess) {
+    public UserMealWithExcessVer2(LocalDateTime dateTime, String description, int calories) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-        this.excess = excess;
     }
 
     @Override
     public String toString() {
+        if (excessPerDays.get(dateTime.toLocalDate())!=null) {
+            return "UserMealWithExcess{" +
+                    "dateTime=" + dateTime +
+                    ", description='" + description + '\'' +
+                    ", calories=" + calories +
+                    ", excess=" + excessPerDays.get(dateTime.toLocalDate()) +
+                    '}';
+        }
         return "UserMealWithExcess{" +
                 "dateTime=" + dateTime +
                 ", description='" + description + '\'' +
                 ", calories=" + calories +
-                ", excess=" + excess +
+                ", excess= ?" +
                 '}';
+
     }
 
     public LocalDateTime getDateTime() {
@@ -40,11 +51,4 @@ public class UserMealWithExcess {
         return calories;
     }
 
-    public void setExcess(boolean excess) {
-        this.excess = excess;
-    }
-
-    public boolean isExcess() {
-        return excess;
-    }
 }
