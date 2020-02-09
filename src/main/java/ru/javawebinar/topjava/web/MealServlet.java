@@ -24,7 +24,7 @@ public class MealServlet extends HttpServlet {
     private static final String LIST_MEALS = "/meals.jsp";
 
     private static DateTimeFormatter dateTimeFormatter;
-    private static MealDao dao = new MealDaoImplInMemory();
+    private static MealDao dao;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
