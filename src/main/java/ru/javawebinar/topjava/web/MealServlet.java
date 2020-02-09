@@ -23,21 +23,18 @@ public class MealServlet extends HttpServlet {
     private static final String ADD_OR_EDIT = "/meal.jsp";
     private static final String LIST_MEALS = "/meals.jsp";
 
-    private static DateTimeFormatter dateTimeFormatter;
-    private static MealDao dao;
+    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");;
+    private MealDao dao;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");
         dao = new MealDaoImplInMemory();
     }
-
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
-        String whereForward = LIST_MEALS;
         String action = req.getParameter("action");
 
         if (action != null) {
@@ -45,27 +42,21 @@ public class MealServlet extends HttpServlet {
                 case "delete":
                     Long idDel = Long.parseLong(req.getParameter("Id"));
                     dao.delete(idDel);
-                    whereForward = "REDIRECT_MEALS";
+                    resp.sendRedirect("meals");
                     break;
                 case "edit":
                     Long idAdd = Long.parseLong(req.getParameter("Id"));
                     Meal meal = dao.getById(idAdd);
                     req.setAttribute("meal", meal);
-                    whereForward = ADD_OR_EDIT;
+                    req.getRequestDispatcher(ADD_OR_EDIT).forward(req, resp);
                     break;
                 case "add":
-                    whereForward = ADD_OR_EDIT;
+                    req.getRequestDispatcher(ADD_OR_EDIT).forward(req, resp);
             }
-        }
-
-        if (whereForward.equals("REDIRECT_MEALS")) {
-            resp.sendRedirect("meals");
         } else {
-            if (whereForward.equals(LIST_MEALS)) {
-                req.setAttribute("dateTimeFormatter", dateTimeFormatter);
-                req.setAttribute("listMealsDynamic", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
-            }
-            req.getRequestDispatcher(whereForward).forward(req, resp);
+            req.setAttribute("dateTimeFormatter", dateTimeFormatter);
+            req.setAttribute("listMealsDynamic", MealsUtil.filteredByStreams(dao.getAll(), LocalTime.MIN, LocalTime.MAX, 2000));
+            req.getRequestDispatcher(LIST_MEALS).forward(req, resp);
         }
     }
 

@@ -4,15 +4,15 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MealDaoImplInMemory implements MealDao {
 
 
-    private final Map<Long, Meal> meals = Collections.synchronizedMap(MealsUtil.generateMap());
+    private final ConcurrentMap<Long, Meal> meals = new ConcurrentHashMap( MealsUtil.generateMap());
     private final AtomicLong lastId = new AtomicLong();
 
     public MealDaoImplInMemory() {

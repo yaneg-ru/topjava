@@ -17,7 +17,7 @@
 <h1><a href="index.html">Home</a></h1>
 <hr>
 
-<h2>List of dynamic meals (optional implementation)</h2>
+<h2>List meals (optional implementation)</h2>
 
 <table>
     <tbody>
