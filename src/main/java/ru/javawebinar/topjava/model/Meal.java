@@ -18,6 +18,7 @@ public class Meal {
         this.calories = calories;
     }
 
+
     public Long getId() { return id;}
 
     public LocalDateTime getDateTime() {

@@ -33,7 +33,9 @@ public class MealsUtil {
     }
 
     public static Map<Long, Meal> generateMap() {
-        return generateList().stream().collect(Collectors.toMap(Meal::getId, meal -> meal));
+        return generateList()
+                .stream()
+                .collect(Collectors.toMap(Meal::getId, meal -> meal));
     }
 
 

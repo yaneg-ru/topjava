@@ -29,7 +29,7 @@
                value="${requestScope.meal!=null?requestScope.meal.calories:0}"/>
     </label>
     <br />
-    <input type="hidden" name="idFromAddEditForm" value="${requestScope.meal!=null?requestScope.meal.id:'new'}" />
+    <input type="hidden" name="idFromAddEditForm" value="${requestScope.meal!=null?requestScope.meal.id:''}" />
     <input type="submit" value="Submit" />
 </form>
 

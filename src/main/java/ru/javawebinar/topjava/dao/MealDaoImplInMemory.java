@@ -3,48 +3,49 @@ package ru.javawebinar.topjava.dao;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MealDaoImplInMemory implements MealDao {
 
-    private final static Map<Long, Meal> meals = MealsUtil.generateMap();
-    private static final AtomicLong lastId = new AtomicLong();
 
-    static {
+    private final Map<Long, Meal> meals = Collections.synchronizedMap(MealsUtil.generateMap());
+    private final AtomicLong lastId = new AtomicLong();
+
+    public MealDaoImplInMemory() {
         lastId.set(meals.size());
     }
 
-    private static Long getNextId() {
+    private Long getNextId() {
         return lastId.incrementAndGet();
     }
 
     @Override
-    public synchronized void addMeal(LocalDateTime localDateTime, String description, int calories) {
+    public void add(Meal meal) {
         Long id = getNextId();
-        meals.put(id, new Meal(id,localDateTime,description,calories));
+        meals.put(id, new Meal(id, meal.getDateTime(),meal.getDescription(),meal.getCalories()));
     }
 
     @Override
-    public synchronized void deleteMeal(Long id) {
+    public void delete(Long id) {
         meals.remove(id);
     }
 
     @Override
-    public synchronized void updateMeal(Meal meal) {
+    public void update(Meal meal) {
         meals.put(meal.getId(), meal);
     }
 
     @Override
-    public synchronized List<Meal> getAllMeals() {
+    public List<Meal> getAll() {
         return new ArrayList<>(meals.values());
     }
 
     @Override
-    public synchronized Meal getMealById(Long id) {
+    public Meal getById(Long id) {
         return meals.get(id);
     }
 }
