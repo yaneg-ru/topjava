@@ -5,17 +5,18 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MealDaoImplInMemory implements MealDao {
 
-
-    private final ConcurrentMap<Long, Meal> meals = new ConcurrentHashMap( MealsUtil.generateMap());
+    private final Map<Long, Meal> meals;
     private final AtomicLong lastId = new AtomicLong();
 
     public MealDaoImplInMemory() {
+        meals = new ConcurrentHashMap( MealsUtil.generateMap());
         lastId.set(meals.size());
     }
 

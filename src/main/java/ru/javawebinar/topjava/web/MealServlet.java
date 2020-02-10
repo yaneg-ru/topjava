@@ -23,7 +23,7 @@ public class MealServlet extends HttpServlet {
     private static final String ADD_OR_EDIT = "/meal.jsp";
     private static final String LIST_MEALS = "/meals.jsp";
 
-    private static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");;
+    private final static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm a");;
     private MealDao dao;
 
     @Override
