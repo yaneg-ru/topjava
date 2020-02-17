@@ -8,13 +8,12 @@ import java.time.format.DateTimeFormatter;
 public class DateTimeUtil {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static boolean isBetweenInclusive(LocalTime lt, LocalTime startTime, LocalTime endTime) {
-        return lt.compareTo(startTime) >= 0 && lt.compareTo(endTime) <= 0;
+    public static <T extends  Comparable> boolean isBetweenInclusive(T lt, T sTime, T eTime) {
+        return lt.compareTo(sTime) >= 0 && lt.compareTo(eTime) <= 0;
     }
 
-    public  static  <T extends  Comparable> boolean isBetweenDate (T ld, T sDate, T eDate, T lt, T sTime, T eTime ) {
-        return (lt.compareTo(sTime) >= 0 && lt.compareTo(eTime) <= 0) &&
-                (ld.compareTo(sDate) >= 0 && ld.compareTo(eDate) <= 0);
+    public  static  <T extends  Comparable> boolean isBetweenDateTime(T ld, T sDate, T eDate, T lt, T sTime, T eTime ) {
+        return isBetweenInclusive(lt, sTime, eTime) && (ld.compareTo(sDate) >= 0 && ld.compareTo(eDate) <= 0);
     }
 
     public static String toString(LocalDateTime ldt) {

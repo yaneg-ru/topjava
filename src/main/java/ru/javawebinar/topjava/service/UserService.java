@@ -14,7 +14,7 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
 @Service
 public class UserService {
-    protected final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final UserRepository repository;
 
     public UserService(UserRepository repository) {
@@ -23,12 +23,7 @@ public class UserService {
 
     public User create(User user) {
         log.info("create {}", user);
-        User newUser = repository.save(user);
-        if (newUser!=null) {
-            return newUser;
-        } else {
-            throw new NotFoundException("User is null");
-        }
+        return repository.save(user);
     }
 
     public User update(User user) {
