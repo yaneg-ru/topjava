@@ -1,3 +1,4 @@
+<%@ page import="ru.javawebinar.topjava.web.SecurityUtil" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -20,7 +21,29 @@
 <section>
     <h3><a href="index.html">Home</a></h3>
     <hr/>
-    <h2>Meals</h2>
+    <h2>Meals for userId = <%=SecurityUtil.authUserId() %></h2>
+
+    <form method="get" action="meals">
+        <dl>
+            <dt>StartDate:</dt>
+            <dd><input type="date" value="${startDate}" name="startDate"></dd>
+        </dl>
+        <dl>
+            <dt>EndDate:</dt>
+            <dd><input type="date" value="${endDate}" name="endDate"></dd>
+        </dl>
+        <dl>
+            <dt>StartTime:</dt>
+            <dd><input type="time" value="${startTime}" name="startTime"></dd>
+        </dl>
+        <dl>
+            <dt>EndTime:</dt>
+            <dd><input type="time" value="${endTime}" name="endTime"></dd>
+        </dl>
+        <button type="submit">Filter</button>
+    </form>
+
+    <hr/>
     <a href="meals?action=create">Add Meal</a>
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">

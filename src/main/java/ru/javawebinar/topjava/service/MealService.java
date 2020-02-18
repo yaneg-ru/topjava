@@ -5,10 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
+import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -37,14 +38,15 @@ public class MealService {
         return checkNotFoundWithId(repository.get(userId, mealId), mealId);
     }
 
-    public List<Meal> getAll(int userId, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-        log.info("getAll with userId={} and filters...", userId);
-        return repository.getAll(userId, startDate, endDate, startTime, endTime);
+    public List<MealTo> getAllByUserByFilters(Collection<MealTo> userMealTo, LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
+        log.info("getAll user's mealTo and filters...");
+        return repository.getAllByUserByFilters(userMealTo, startDate, endDate, startTime, endTime);
     }
+
 
     public List<Meal> getAll(int userId) {
         log.info("getAll with userId={}", userId);
-        return repository.getAll(userId);
+        return repository.getAllByUser(userId);
     }
 
 }

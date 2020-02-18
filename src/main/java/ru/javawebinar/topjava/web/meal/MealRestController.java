@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -31,8 +33,7 @@ public class MealRestController {
         service.save(meal, SecurityUtil.authUserId());
     }
 
-
-    public void delete(int mealId){
+    public void delete(int mealId) {
         log.info("delete {} with userId={}", mealId, SecurityUtil.authUserId());
         service.delete(mealId, SecurityUtil.authUserId());
     }
@@ -41,14 +42,20 @@ public class MealRestController {
         return service.get(mealId, SecurityUtil.authUserId());
     }
 
-    public List<Meal> getAll(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime)  {
+    public List<MealTo> getAllByFiltrs(String sDate, String eDate, String sTime, String eTime) {
         log.info("getAll with userId={}", SecurityUtil.authUserId());
-        return service.getAll(SecurityUtil.authUserId(), startDate, endDate, startTime, endTime);
+
+        LocalDate startDate = (sDate.isEmpty() ? LocalDate.MIN : LocalDate.parse(sDate));
+        LocalDate endDate = (eDate.isEmpty() ? LocalDate.MAX : LocalDate.parse(eDate));
+        LocalTime startTime = (sTime.isEmpty() ? LocalTime.MIN : LocalTime.parse(sTime));
+        LocalTime endTime = (eTime.isEmpty() ? LocalTime.MAX : LocalTime.parse(eTime));
+
+        return service.getAllByUserByFilters(getAll(), startDate, endDate, startTime, endTime);
     }
 
-    public List<Meal> getAll()  {
+    public List<MealTo> getAll() {
         log.info("getAll with userId={}", SecurityUtil.authUserId());
-        return service.getAll(SecurityUtil.authUserId());
+        return MealsUtil.getTos(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
 }
