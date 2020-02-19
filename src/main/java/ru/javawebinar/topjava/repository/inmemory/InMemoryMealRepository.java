@@ -39,8 +39,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     private void saveUserMeal(int userId, Meal meal) {
-        Map<Integer, Meal> userMeals;
-        userMeals = repository.get(userId);
+        Map<Integer, Meal> userMeals = repository.get(userId);
         if (userMeals == null) userMeals = new HashMap<>();
         userMeals.put(meal.getId(), meal);
         repository.put(userId, userMeals);
@@ -58,11 +57,12 @@ public class InMemoryMealRepository implements MealRepository {
         }
         // update
         // handle case: update, but not present in storage
-        Meal mealFromRepository = (repository.get(userId) != null ?
-                repository.get(userId).get(meal.getId()) :
-                null);
-        if (mealFromRepository == null)
-            throw new NotFoundException("mealFromRepository.getUserId()!=userId");
+        Map<Integer, Meal> userMeals = repository.get(userId);
+        Meal mealFromRepository =
+                (userMeals != null
+                        ? userMeals.get(meal.getId())
+                        : null);
+        if (mealFromRepository == null) return null;
         repository.computeIfPresent(userId, (usrId, usersMeals) -> {
             saveUserMeal(userId, meal);
             return repository.get(userId);
@@ -74,20 +74,23 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public boolean delete(int userId, int mealId) {
         log.info("delete meal with id={} with userId={}", mealId, userId);
-        Meal mealToDelete = (repository.get(userId) != null ?
-                repository.get(userId).get(mealId) :
-                null);
+        Map<Integer, Meal> userMeals = repository.get(userId);
+        Meal mealToDelete =
+                (userMeals != null
+                        ? userMeals.get(mealId)
+                        : null);
         if (mealToDelete == null) return false;
-        return (repository.get(userId).remove(mealId)!=null);
+        return (userMeals.remove(mealId) != null);
     }
 
     // null if not found
     @Override
     public Meal get(int userId, int mealId) {
         log.info("get meal with mealId={} with userId={}", mealId, userId);
-        return (repository.get(userId) != null ?
-                repository.get(userId).get(mealId) :
-                null);
+        Map<Integer, Meal> userMeals = repository.get(userId);
+        return (userMeals != null
+                ? userMeals.get(mealId)
+                : null);
     }
 
     @Override
