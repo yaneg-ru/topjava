@@ -23,9 +23,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml", "/spring/spring-db.xml");
-        log.info("\n{}\n", Arrays.toString(appCtx.getBeanDefinitionNames()));
-        controller = appCtx.getBean(AdminRestController.class);
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app-test.xml", "/spring/spring-db.xml");
     }
 
     @AfterClass
@@ -38,6 +36,9 @@ public class InMemoryAdminRestControllerTest {
         // re-initialize
         InMemoryUserRepository repository = appCtx.getBean(InMemoryUserRepository.class);
         repository.init();
+        controller = appCtx.getBean(AdminRestController.class);
+
+        System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
     }
 
     @Test
