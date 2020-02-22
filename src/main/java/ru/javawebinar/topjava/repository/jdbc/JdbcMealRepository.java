@@ -49,7 +49,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET description=:description, dateTime=:dateTime, calories=:calories " +
+                "UPDATE meals SET description=:description, date_time=:dateTime, calories=:calories " +
                         "WHERE id=:id AND user_id=:userId", map) == 0) {
             return null;
         }
@@ -69,15 +69,15 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> result =  jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY datetime DESC", ROW_MAPPER, userId);
+        List<Meal> result =  jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
         return (result==null? Collections.EMPTY_LIST
                 : result);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        List<Meal> result = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND datetime>=? " +
-                "AND datetime<? ORDER BY datetime DESC", ROW_MAPPER, userId, startDate, endDate);
+        List<Meal> result = jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND date_time>=? " +
+                "AND date_time<? ORDER BY date_time DESC", ROW_MAPPER, userId, startDate, endDate);
         return (result==null? Collections.EMPTY_LIST
                 : result);
     }
