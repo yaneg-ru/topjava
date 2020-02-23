@@ -19,7 +19,8 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
 @ContextConfiguration({
         "classpath:spring/spring-app.xml",
-        "classpath:spring/spring-db.xml"
+        "classpath:spring/spring-db.xml",
+        "classpath:spring/spring-jdbc-repository.xml"
 })
 @RunWith(SpringRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
@@ -30,19 +31,19 @@ public class MealServiceTest {
 
     @Test
     public void get() {
-        Meal meal = mealService.get(1, USER_ID);
+        Meal meal = mealService.get(MEAL_ID_1, USER_ID);
         assertMatch(meal, MEAL_1);
     }
 
     @Test(expected = NotFoundException.class)
     public void getNotFound() throws Exception {
-        mealService.get(1, ADMIN_ID);
+        mealService.get(MEAL_ID_1, ADMIN_ID);
     }
 
-    @Test (expected = NotFoundException.class)
-    public void delete() {
-        mealService.delete(1, USER_ID);
-        mealService.get(1, USER_ID);
+    @Test(expected = NotFoundException.class)
+    public void delete() throws Exception{
+        mealService.delete(MEAL_ID_1, USER_ID);
+        mealService.get(MEAL_ID_1, USER_ID);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class MealServiceTest {
 
     @Test(expected = NotFoundException.class)
     public void deletedNotFound() throws Exception {
-        mealService.delete(1, ADMIN_ID);
+        mealService.delete(MEAL_ID_1, ADMIN_ID);
     }
 
     @Test
@@ -73,7 +74,7 @@ public class MealServiceTest {
     public void update() {
         Meal updated = getUpdated();
         mealService.update(updated, USER_ID);
-        assertMatch(mealService.get(1, USER_ID), updated);
+        assertMatch(mealService.get(MEAL_ID_1, USER_ID), updated);
     }
 
     @Test
