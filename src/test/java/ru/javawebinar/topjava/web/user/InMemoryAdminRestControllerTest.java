@@ -23,7 +23,7 @@ public class InMemoryAdminRestControllerTest {
 
     @BeforeClass
     public static void beforeClass() {
-        appCtx = new ClassPathXmlApplicationContext("spring/spring-inmomory-repository.xml", "/spring/spring-db.xml", "/spring/spring-app.xml");
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-inmomory-repository.xml", "/spring/spring-app.xml");
     }
 
     @AfterClass
