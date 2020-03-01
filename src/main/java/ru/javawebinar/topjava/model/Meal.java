@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = Meal.BY_GETBETWEEN, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user " +
+        @NamedQuery(name = Meal.BY_GETBETWEEN, query = "SELECT m FROM Meal m " +
                 "WHERE m.user.id=:userId AND m.dateTime>=:startDate AND m.dateTime<:endDate ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m LEFT JOIN FETCH m.user " +
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m  " +
                 "WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
 })
 

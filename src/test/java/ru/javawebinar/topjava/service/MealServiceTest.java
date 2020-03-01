@@ -2,15 +2,12 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.StopWatch;
 import ru.javawebinar.topjava.LoggingTest;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -41,11 +38,6 @@ public class MealServiceTest {
 
     @Rule
     public final LoggingTest logger = new LoggingTest();
-
-    @BeforeClass
-    public static void before() {
-        LoggingTest.log = new StringBuilder("\nLogging test's methods: \n");
-    }
 
     @AfterClass
     public static void after() {

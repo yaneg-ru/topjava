@@ -8,7 +8,7 @@ import org.springframework.util.StopWatch;
 public class LoggingTest implements TestRule {
 
     private StopWatch stopWatch = new StopWatch();
-    public static StringBuilder log;
+    public static StringBuilder log = new StringBuilder("\nLogging test's methods: \n");
 
     @Override
     public Statement apply(final Statement base, final Description description) {
