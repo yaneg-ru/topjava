@@ -1,14 +1,19 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.LoggingTest;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -16,6 +21,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
 
+import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
@@ -28,6 +34,9 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger log = getLogger(MealServiceTest.class);
+    private static StringBuilder logScope = new StringBuilder("\nLogging test's methods: \n");
+
     @Autowired
     private MealService service;
     @Autowired
@@ -36,13 +45,21 @@ public class MealServiceTest {
     @Rule
     public final ExpectedException thrown = ExpectedException.none();
 
-    @Rule
-    public final LoggingTest logger = new LoggingTest();
-
     @AfterClass
     public static void after() {
-        System.out.println(LoggingTest.log.toString());
+        log.info(logScope.toString());
     }
+
+
+    @Rule
+    public Stopwatch stopwatch = new Stopwatch() {
+        @Override
+        protected void finished(long nanos, Description description) {
+            String rowLog = "Test method " + description.getMethodName() + " running:  "+ nanos+" ns";
+            log.info(rowLog);
+            logScope.append(rowLog + "\n");
+        }
+    };
 
     @Test
     public void delete() throws Exception {

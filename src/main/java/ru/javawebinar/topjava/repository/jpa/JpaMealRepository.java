@@ -31,6 +31,7 @@ public class JpaMealRepository implements MealRepository {
             return meal;
         } else {
             if (get(meal.getId(), userId) == null) return null;
+            if (meal.getUser()==null) meal.setUser(em.find(User.class, userId));
             return em.merge(meal);
         }
     }
@@ -38,15 +39,10 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        try {
-            Meal refMeal = em.getReference(Meal.class, id);
-            if (refMeal == null) return false;
-            if (refMeal.getUser().getId() != userId) return false;
-        } catch (EntityNotFoundException e) {
-            return false;
-        }
-        Query query = em.createQuery("DELETE FROM Meal m WHERE m.id=:id");
-        return query.setParameter("id", id).executeUpdate() != 0;
+        return em.createNamedQuery(Meal.DELETE)
+                .setParameter("id", id)
+                .setParameter("userId", userId)
+                .executeUpdate() != 0;
     }
 
     @Override
@@ -66,7 +62,7 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        return em.createNamedQuery(Meal.BY_GETBETWEEN, Meal.class)
+        return em.createNamedQuery(Meal.BY_GET_BETWEEN, Meal.class)
                 .setParameter("userId", userId)
                 .setParameter("startDate", startDate)
                 .setParameter("endDate", endDate)
