@@ -6,10 +6,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.*;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -24,14 +21,16 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
+        User refUser = em.getReference(User.class, userId);
         if (meal.isNew()) {
-            User refUser = em.getReference(User.class, userId);
             meal.setUser(refUser);
             em.persist(meal);
             return meal;
         } else {
-            if (get(meal.getId(), userId) == null) return null;
-            if (meal.getUser()==null) meal.setUser(em.find(User.class, userId));
+            if (get(meal.getId(), userId) == null) {
+                return null;
+            }
+            meal.setUser(refUser);
             return em.merge(meal);
         }
     }
@@ -47,10 +46,14 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        Meal findMeal = em.find(Meal.class, id);
-        if (findMeal == null) return null;
-        if (findMeal.getUser().getId() != userId) return null;
-        return findMeal;
+        try {
+            return em.createNamedQuery(Meal.GET, Meal.class)
+                    .setParameter("userId", userId)
+                    .setParameter("id", id)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

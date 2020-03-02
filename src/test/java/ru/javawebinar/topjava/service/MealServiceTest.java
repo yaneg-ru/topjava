@@ -55,7 +55,7 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String rowLog = "Test method " + description.getMethodName() + " running:  "+ nanos+" ns";
+            String rowLog = String.format("%1$" + 5 + "s", String.valueOf(nanos / 1000_000)) +" ms - " + description.getMethodName() ;
             log.info(rowLog);
             logScope.append(rowLog + "\n");
         }
@@ -67,14 +67,12 @@ public class MealServiceTest {
         Assert.assertNull(repository.get(MEAL1_ID, USER_ID));
     }
 
-    //@Test(expected = NotFoundException.class)
     @Test
     public void deleteNotFound() throws Exception {
         thrown.expect(NotFoundException.class);
         service.delete(1, USER_ID);
     }
 
-    //@Test(expected = NotFoundException.class)
     @Test
     public void deleteNotOwn() throws Exception {
         thrown.expect(NotFoundException.class);
@@ -118,7 +116,6 @@ public class MealServiceTest {
         MEAL_MATCHER.assertMatch(service.get(MEAL1_ID, USER_ID), updated);
     }
 
-    //@Test(expected = NotFoundException.class)
     @Test
     public void updateNotFound() throws Exception {
         thrown.expect(NotFoundException.class);
