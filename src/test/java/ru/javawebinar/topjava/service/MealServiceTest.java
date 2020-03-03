@@ -20,6 +20,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -55,7 +56,7 @@ public class MealServiceTest {
     public Stopwatch stopwatch = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String rowLog = String.format("%1$" + 5 + "s", String.valueOf(nanos / 1000_000)) +" ms - " + description.getMethodName() ;
+            String rowLog = String.format("%1$" + 5 + "s", String.valueOf(TimeUnit.NANOSECONDS.toMillis(nanos)) +" ms - " + description.getMethodName() );
             log.info(rowLog);
             logScope.append(rowLog + "\n");
         }

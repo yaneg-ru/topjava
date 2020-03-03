@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.jpa;
 
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
@@ -21,8 +22,8 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        User refUser = em.getReference(User.class, userId);
         if (meal.isNew()) {
+            User refUser = em.getReference(User.class, userId);
             meal.setUser(refUser);
             em.persist(meal);
             return meal;
@@ -30,6 +31,7 @@ public class JpaMealRepository implements MealRepository {
             if (get(meal.getId(), userId) == null) {
                 return null;
             }
+            User refUser = em.getReference(User.class, userId);
             meal.setUser(refUser);
             return em.merge(meal);
         }
@@ -46,14 +48,11 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        try {
-            return em.createNamedQuery(Meal.GET, Meal.class)
-                    .setParameter("userId", userId)
-                    .setParameter("id", id)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+        List<Meal> meals = em.createNamedQuery(Meal.GET, Meal.class)
+                .setParameter("userId", userId)
+                .setParameter("id", id)
+                .getResultList();
+        return DataAccessUtils.singleResult(meals);
     }
 
     @Override
