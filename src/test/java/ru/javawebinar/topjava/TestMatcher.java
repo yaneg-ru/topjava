@@ -20,6 +20,7 @@ public class TestMatcher<T> {
     }
 
     public void assertMatch(Iterable<T> actual, T... expected) {
+
         assertMatch(actual, List.of(expected));
     }
 
