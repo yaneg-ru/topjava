@@ -1,9 +1,10 @@
-package ru.javawebinar.topjava.service.meal;
+package ru.javawebinar.topjava.service.datajpa;
 
 import org.springframework.test.context.ActiveProfiles;
 import ru.javawebinar.topjava.Profiles;
+import ru.javawebinar.topjava.service.MealServiceTest;
 
-@ActiveProfiles(Profiles.REPOSITORY_IMPLEMENTATION)
+@ActiveProfiles(Profiles.DATAJPA)
 public class MealServiceDataJpaTest extends MealServiceTest {
 
 }

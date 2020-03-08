@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service.meal;
+package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,7 +29,7 @@ public abstract class MealServiceTest extends ServiceTest {
 
     @Test
     public void getWithUser() throws Exception {
-        Meal actual = repository.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
+        Meal actual = service.getWithUser(ADMIN_MEAL_ID, ADMIN_ID);
         MEAL_MATCHER.assertMatch(actual, ADMIN_MEAL1);
         USER_MATCHER.assertMatch(actual.getUser(), ADMIN);
     }

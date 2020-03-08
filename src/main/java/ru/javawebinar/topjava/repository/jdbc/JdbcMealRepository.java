@@ -85,7 +85,5 @@ public abstract class JdbcMealRepository<T> implements MealRepository {
                 ROW_MAPPER, userId, handlerData(startDateTime), handlerData(endDateTime));
     }
 
-    public T handlerData(LocalDateTime dateTime) {
-        return (T) dateTime;
-    }
+    abstract public T handlerData(LocalDateTime dateTime);
 }

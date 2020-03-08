@@ -52,9 +52,10 @@ public class UserService {
         checkNotFoundWithId(repository.save(user), user.getId());
     }
 
-    @Cacheable("users")
     public User getWithMeals(int id) {
-        return repository.getWithMeals(id);
-    };
+        return checkNotFoundWithId(repository.getWithMeals(id), id);
+    }
+
+    ;
 
 }

@@ -21,9 +21,6 @@ public class DataJpaUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        if (user.getMeals()==null) {
-            user.setMeals(Collections.emptyList());
-        }
         return crudRepository.save(user);
     }
 

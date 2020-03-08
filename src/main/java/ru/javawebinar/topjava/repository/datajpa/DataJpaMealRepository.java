@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true)
 public class DataJpaMealRepository implements MealRepository {
     @Autowired
     private CrudMealRepository crudRepository;
@@ -33,14 +32,13 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
-    @Transactional
     public boolean delete(int id, int userId) {
         return crudRepository.delete(id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        return crudRepository.findByAndIdAndUserId(id, userId);
+        return crudRepository.get(id, userId);
     }
 
     public Meal getWithUser(int id, int userId) {
@@ -49,11 +47,11 @@ public class DataJpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return crudRepository.findByUserIdOrderByDateTimeDesc(userId);
+        return crudRepository.getAll(userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return crudRepository.findByUserIdAndDateTimeGreaterThanEqualAndDateTimeLessThanOrderByDateTimeDesc(userId, startDateTime, endDateTime);
+        return crudRepository.getBetweenHalfOpen(userId, startDateTime, endDateTime);
     }
 }

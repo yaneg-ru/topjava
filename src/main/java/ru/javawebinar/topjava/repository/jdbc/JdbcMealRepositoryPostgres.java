@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Repository
@@ -15,4 +16,10 @@ public class JdbcMealRepositoryPostgres extends JdbcMealRepository<LocalDateTime
     public JdbcMealRepositoryPostgres(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
     }
+
+    @Override
+    public LocalDateTime handlerData(LocalDateTime dateTime) {
+        return dateTime;
+    }
+
 }

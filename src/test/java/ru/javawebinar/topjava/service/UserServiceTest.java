@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.service.user;
+package ru.javawebinar.topjava.service;
 
 import org.assertj.core.util.Lists;
 import org.junit.Assert;
