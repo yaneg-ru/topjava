@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.repository.datajpa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -13,9 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class DataJpaMealRepository implements MealRepository {
-    private static final Sort SORT_DATE = Sort.by(Sort.Direction.DESC, "dateTime");
-
     @Autowired
     private CrudMealRepository crudRepository;
 
@@ -23,6 +23,7 @@ public class DataJpaMealRepository implements MealRepository {
     private CrudUserRepository crudUserRepository;
 
     @Override
+    @Transactional
     public Meal save(Meal meal, int userId) {
         meal.setUser(crudUserRepository.getOne(userId));
         if (!meal.isNew() && get(meal.getId(), userId) == null) {
@@ -32,23 +33,18 @@ public class DataJpaMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
         return crudRepository.delete(id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal = crudRepository.findById(id).orElse(null);
-        return meal != null && meal.getUser().getId() == userId
-                ? meal
-                : null;
+        return crudRepository.findByAndIdAndUserId(id, userId);
     }
 
     public Meal getWithUser(int id, int userId) {
-        Meal meal = crudRepository.findByIdWithUser(id);
-        return meal != null && meal.getUser().getId() == userId
-                ? meal
-                : null;
+        return crudRepository.findByIdWithUser(id,userId);
     }
 
     @Override

@@ -26,6 +26,7 @@ public class UserTestData {
     public static User getUpdated() {
         User updated = new User(USER);
         updated.setName("UpdatedName");
+        updated.setMeals(Collections.emptyList());
         updated.setCaloriesPerDay(330);
         return updated;
     }

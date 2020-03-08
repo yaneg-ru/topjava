@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -30,6 +31,7 @@ public class JpaUserRepository implements UserRepository {
     @Transactional
     public User save(User user) {
         if (user.isNew()) {
+            user.setMeals(Collections.emptyList());
             em.persist(user);
             return user;
         } else {

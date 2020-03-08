@@ -55,7 +55,7 @@ public class User extends AbstractNamedEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @NotNull
-    private List<Meal> meals = Collections.emptyList();
+    private List<Meal> meals = null;
 
     public User() {
     }
