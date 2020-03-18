@@ -7,10 +7,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.JdbcValidator;
@@ -33,9 +31,6 @@ public class JdbcMealRepository implements MealRepository {
 
     private final SimpleJdbcInsert insertMeal;
 
-    private final TransactionTemplate txReadOnly;
-    private final TransactionTemplate tx;
-
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate, DataSource dataSource) {
         this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
@@ -43,11 +38,6 @@ public class JdbcMealRepository implements MealRepository {
 
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-
-        DataSourceTransactionManager dataSourceTransactionManager = new DataSourceTransactionManager(dataSource);
-        tx = new TransactionTemplate(dataSourceTransactionManager);
-        dataSourceTransactionManager.setEnforceReadOnly(true);
-        txReadOnly = new TransactionTemplate(dataSourceTransactionManager);
     }
 
     @Override
@@ -66,14 +56,14 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("user_id", userId);
 
         if (meal.isNew()) {
-            Number newId = tx.execute(ts -> insertMeal.executeAndReturnKey(map));
+            Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
         } else {
-            if (tx.execute(ts -> namedParameterJdbcTemplate.update("" +
+            if (namedParameterJdbcTemplate.update("" +
                             "UPDATE meals " +
                             "   SET description=:description, calories=:calories, date_time=:date_time " +
                             " WHERE id=:id AND user_id=:user_id"
-                    , map) == 0)) {
+                    , map) == 0) {
                 return null;
             }
         }
@@ -81,27 +71,28 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
-        return txReadOnly.execute(ts -> jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId)) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> meals = txReadOnly.execute(ts -> jdbcTemplate.query(
-                "SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId));
+        List<Meal> meals = jdbcTemplate.query(
+                "SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return txReadOnly.execute(ts -> jdbcTemplate.query(
-                "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId));
+        return jdbcTemplate.query(
+                "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return txReadOnly.execute(ts -> jdbcTemplate.query(
+        return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",
-                ROW_MAPPER, userId, startDateTime, endDateTime));
+                ROW_MAPPER, userId, startDateTime, endDateTime);
     }
 }

@@ -3,10 +3,7 @@ package ru.javawebinar.topjava.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import javax.validation.*;
 import java.util.Set;
 
 public class JdbcValidator<T> {
@@ -22,7 +19,7 @@ public class JdbcValidator<T> {
             violations.forEach(item -> {
                 log.error(item.getPropertyPath() +" - " + item.getMessage());
             });
-            return false;
+            throw new ConstraintViolationException(violations);
         }
         return true;
     }

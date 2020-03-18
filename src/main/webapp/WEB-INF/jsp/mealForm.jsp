@@ -11,14 +11,9 @@
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
     <h2>
-        <c:choose>
-            <c:when test="${action = 'create'}">
-                <s:message code="meal.create"/>
-            </c:when>
-            <c:otherwise>
-                <s:message code="meal.edit"/>
-            </c:otherwise>
-        </c:choose>
+        <s:message code="meal.create" var="create"/>
+        <s:message code="meal.edit" var="edit"/>
+        <c:out value="${action == 'create' ? create : edit}" />
     </h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="meals">

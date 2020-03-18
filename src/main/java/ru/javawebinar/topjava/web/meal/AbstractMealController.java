@@ -21,7 +21,8 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 @Controller
 @RequestMapping(path = "/meals")
 public abstract class AbstractMealController {
-    private static final Logger log = LoggerFactory.getLogger(AbstractMealController.class);
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     protected final MealService service;
 
