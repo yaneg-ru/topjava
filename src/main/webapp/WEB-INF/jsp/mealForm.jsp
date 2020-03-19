@@ -10,12 +10,12 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 <section>
+    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <h2>
         <s:message code="meal.create" var="create"/>
         <s:message code="meal.edit" var="edit"/>
-        <c:out value="${action == 'create' ? create : edit}" />
+        <c:out value="${meal.isNew()? create : edit}" />
     </h2>
-    <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="meals">
         <input type="hidden" name="id" value="${meal.id}">
         <dl>

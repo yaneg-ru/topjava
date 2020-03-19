@@ -6,6 +6,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class DataJpaUserRepository implements UserRepository {
@@ -44,6 +45,11 @@ public class DataJpaUserRepository implements UserRepository {
 
     @Override
     public User getWithMeals(int id) {
-        return crudRepository.getWithMeals(id);
+        User user = crudRepository.getWithMeals(id);
+        if (user == null) {
+            return null;
+        }
+        user.setMeals(user.getMeals().stream().distinct().collect(Collectors.toList()));
+        return user;
     }
 }

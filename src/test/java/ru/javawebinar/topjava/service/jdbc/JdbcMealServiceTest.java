@@ -14,11 +14,4 @@ import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 
 @ActiveProfiles(JDBC)
 public class JdbcMealServiceTest extends AbstractMealServiceTest {
-    @Override
-    public void updateNotFound() throws Exception {
-        ConstraintViolationException ex = Assert.assertThrows(ConstraintViolationException.class,
-                () -> service.update(MEAL1, ADMIN_ID));
-        Assert.assertEquals("user: must not be null", ex.getMessage());
-
-    }
 }

@@ -35,12 +35,12 @@ public class JdbcUserRepository<mapUserRoles> implements UserRepository {
         }
     };
 
-    private static final ResultSetExtractor<Map<Integer, Set<Role>>> RESULT_SET_EXTRACTOR_UESR_ROLES = new ResultSetExtractor<Map<Integer, Set<Role>>>() {
+    private static final ResultSetExtractor<Map<Integer, Set<Role>>> RESULT_SET_EXTRACTOR_USER_ROLES = new ResultSetExtractor<Map<Integer, Set<Role>>>() {
         Map<Integer, Set<Role>> mapUserRoles = new HashMap<>();
         @Override
         public Map<Integer, Set<Role>> extractData(ResultSet rs) throws SQLException, DataAccessException {
             while(rs.next()) {
-                mapUserRoles.computeIfAbsent(rs.getInt("user_id"), k -> new HashSet<Role>())
+                mapUserRoles.computeIfAbsent(rs.getInt("user_id"), k -> EnumSet.noneOf(Role.class))
                         .add(Role.valueOf(rs.getString("role")));
             }
             return mapUserRoles;
@@ -82,7 +82,9 @@ public class JdbcUserRepository<mapUserRoles> implements UserRepository {
             return null;
         }
 
-        jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        if (!user.isNew()) {
+            jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.getId());
+        }
 
         jdbcTemplate.batchUpdate(
                 "insert into user_roles (user_id, role) values(?,?)",
@@ -127,7 +129,7 @@ public class JdbcUserRepository<mapUserRoles> implements UserRepository {
     @Override
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER_USER);
-        Map<Integer, Set<Role>> mapUserRoles = jdbcTemplate.query("SELECT * FROM user_roles", RESULT_SET_EXTRACTOR_UESR_ROLES);
+        Map<Integer, Set<Role>> mapUserRoles = jdbcTemplate.query("SELECT * FROM user_roles", RESULT_SET_EXTRACTOR_USER_ROLES);
         for (User user : users) {
             user.setRoles(mapUserRoles.get(user.getId()));
         }

@@ -19,7 +19,6 @@ import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 @Controller
-@RequestMapping(path = "/meals")
 public abstract class AbstractMealController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());

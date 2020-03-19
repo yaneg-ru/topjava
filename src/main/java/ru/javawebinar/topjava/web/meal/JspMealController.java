@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -20,6 +21,7 @@ import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
 @Controller
+@RequestMapping(path = "/meals")
 public class JspMealController extends AbstractMealController {
 
     public JspMealController(MealService service) {
@@ -33,18 +35,16 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("/update")
-    public String update(HttpServletRequest request, Model model) {
+    public String update(HttpServletRequest request) {
         final Meal meal = get(getId(request));
         request.setAttribute("meal", meal);
-        model.addAttribute("action", "edit");
         return "mealForm";
     }
 
     @GetMapping("/create")
-    public String create(HttpServletRequest request, Model model)  {
+    public String create(HttpServletRequest request)  {
         final Meal meal = new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000);
         request.setAttribute("meal", meal);
-        model.addAttribute("action", "create");
         return "mealForm";
     }
 

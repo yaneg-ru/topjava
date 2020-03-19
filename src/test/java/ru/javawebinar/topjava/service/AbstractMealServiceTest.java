@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
@@ -89,7 +88,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void getAll() throws Exception {
-        MEAL_MATCHER.assertMatch(service.getAll(USER_ID), MEALS);
+        MEAL_MATCHER.assertMatch(service.getAll(USER_ID), USER_MEALS);
     }
 
     @Test
@@ -102,7 +101,7 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
     @Test
     public void getBetweenWithNullDates() throws Exception {
-        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), MEALS);
+        MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), USER_MEALS);
     }
 
     @Test
