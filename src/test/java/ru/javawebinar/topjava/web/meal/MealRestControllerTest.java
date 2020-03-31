@@ -101,5 +101,17 @@ class MealRestControllerTest extends AbstractControllerTest {
         List<MealTo> expectedList = getTos(MEALS, DEFAULT_CALORIES_PER_DAY);
         MEALTO_MATCHER.assertMatch(getListWithFilter, expectedList);
 
+        action = perform(MockMvcRequestBuilders.get(REST_URL + "filter?" +
+                "startDate=2020-01-30&" +
+                "startTime=00:00:00&" +
+                "endDate=2020-01-30&" +
+                "endTime=23:59:59"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
+        getListWithFilter = readListFromJsonMvcResult(action.andReturn(), MealTo.class);
+        expectedList = getTos(List.of(MEAL3, MEAL2, MEAL1), DEFAULT_CALORIES_PER_DAY);
+        MEALTO_MATCHER.assertMatch(getListWithFilter, expectedList);
+
     }
 }

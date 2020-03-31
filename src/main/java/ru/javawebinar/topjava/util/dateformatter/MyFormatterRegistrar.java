@@ -10,8 +10,8 @@ public class MyFormatterRegistrar implements FormatterRegistrar {
 
     @Override
     public void registerFormatters(FormatterRegistry registry) {
-        registry.addFormatterForFieldAnnotation(new LocalDateFormatAnnotationFormatterFactory());
-        registry.addFormatterForFieldAnnotation(new LocalTimeFormatAnnotationFormatterFactory());
+        registry.addFormatter(new LocalDateFormatter());
+        registry.addFormatter(new LocalTimeFormatter());
 
     }
 
