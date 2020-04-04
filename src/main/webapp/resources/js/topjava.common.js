@@ -33,9 +33,20 @@ function deleteRow(id) {
 }
 
 function updateTable() {
-    $.get(context.ajaxUrl, function (data) {
+
+    var filter = "filter/?" + $('form[name="filter"]').serialize();
+
+    if (filter == "filter/?startDate=&endDate=&startTime=&endTime=" || filter == "filter/?") {
+        filter = "";
+    }
+
+    $.get(context.ajaxUrl + filter, function (data) {
         context.datatableApi.clear().rows.add(data).draw();
     });
+
+    if (filter != "") {
+        successNoty("Filtered");
+    }
 }
 
 function save() {
