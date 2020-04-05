@@ -35,9 +35,18 @@ $(function () {
     );
 });
 
+function getFilter() {
+    var filter = "filter/?" + $('form[name="filter"]').serialize();
+
+    if (filter == "filter/?startDate=&endDate=&startTime=&endTime=" || filter == "filter/?") {
+        filter = "";
+    }
+    return filter;
+}
 
 function clearFilter() {
-    $("body").find('#filter').find('input').val('');
+    //$('#dataFilter')[0].reset(); // не работает
+    $("body").find('#dataFilter').find('input').val('');
     updateTableWithFilter();
     successNoty("Clear filter");
 }

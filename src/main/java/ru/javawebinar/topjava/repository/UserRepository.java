@@ -23,7 +23,5 @@ public interface UserRepository {
         throw new UnsupportedOperationException();
     }
 
-    default boolean setEnabled(int id, boolean enabled) {
-        throw new UnsupportedOperationException();
-    }
+    boolean setEnabled(int id, boolean enabled);
 }

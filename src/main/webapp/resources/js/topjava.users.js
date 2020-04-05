@@ -42,18 +42,18 @@ $(function () {
 
     $('.activeUser').on('change', function () { // on change of state
         var id = $(this).parent().parent().attr("id");
+        var tr = $(this).parent().parent();
         var enabled = this.checked;
         $.ajax({
             url: context.ajaxUrl + "?id=" + id + "&enabled=" + enabled,
-            type: "PUT"
-        }).success(function () {
-            if (enabled) {
-                $(this).parent().parent().css("color", "#212529")
-            } else {
-                $(this).parent().parent().css("color", "darkgray")
+            type: "PUT",
+            success: function () {
+                tr.attr("data-userEnabled", enabled);
+                successNoty("Update enabled status");
+            },
+            error: function () {
+                this.checked = !enabled;
             }
-            successNoty("Update enabled status");
-        });
+        })
     })
-
 });

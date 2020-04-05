@@ -34,10 +34,10 @@ function deleteRow(id) {
 
 function updateTable() {
 
-    var filter = "filter/?" + $('form[name="filter"]').serialize();
+    var filter = "";
 
-    if (filter == "filter/?startDate=&endDate=&startTime=&endTime=" || filter == "filter/?") {
-        filter = "";
+    if (context.ajaxUrl == "ajax/profile/meals/" ) {
+        filter = getFilter();
     }
 
     $.get(context.ajaxUrl + filter, function (data) {

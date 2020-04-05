@@ -13,7 +13,7 @@
     <div class="container">
         <h3><spring:message code="meal.title"/></h3>
 
-        <form id="filter" name="filter" method="get" action="meals/filter">
+        <form id="dataFilter" name="filter" method="get" action="meals/filter">
             <dl>
                 <dt><spring:message code="meal.startDate"/>:</dt>
                 <dd><input type="date" name="startDate" value="${param.startDate}"></dd>

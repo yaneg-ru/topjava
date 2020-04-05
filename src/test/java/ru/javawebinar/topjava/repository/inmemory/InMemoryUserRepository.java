@@ -17,6 +17,7 @@ import static ru.javawebinar.topjava.UserTestData.USER;
 @Repository
 public class InMemoryUserRepository extends InMemoryBaseRepository<User> implements UserRepository {
 
+
     public void init() {
         map.clear();
         map.put(UserTestData.USER_ID, USER);
@@ -37,5 +38,13 @@ public class InMemoryUserRepository extends InMemoryBaseRepository<User> impleme
                 .filter(u -> email.equals(u.getEmail()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public boolean setEnabled(int id, boolean enabled) {
+        User user = map.get(id);
+        user.setEnabled(enabled);
+        map.put(id, user);
+        return map.get(id).isEnabled()==enabled;
     }
 }
