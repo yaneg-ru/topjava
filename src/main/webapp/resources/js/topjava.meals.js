@@ -45,8 +45,8 @@ function getFilter() {
 }
 
 function clearFilter() {
-    //$('#dataFilter')[0].reset(); // не работает
-    $("body").find('#dataFilter').find('input').val('');
-    updateTableWithFilter();
+    $('#dataFilter')[0].reset();
+    //$("body").find('#dataFilter').find('input').val('');
+    updateTable();
     successNoty("Clear filter");
 }
