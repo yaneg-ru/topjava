@@ -118,4 +118,11 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
         assertFalse(userService.get(USER_ID).isEnabled());
     }
+
+    @Test
+    void getAllUsersByNotAuthorizedUser() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL)
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isForbidden());
+    }
 }
