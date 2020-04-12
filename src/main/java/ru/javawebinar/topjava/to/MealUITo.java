@@ -18,7 +18,6 @@ public class MealUITo extends BaseTo implements Serializable {
     @Size(min = 2, max = 120)
     private  String description;
 
-    @NotNull
     @Range(min = 10, max = 5000)
     private  int calories;
 

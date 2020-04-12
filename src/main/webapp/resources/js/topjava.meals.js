@@ -65,10 +65,3 @@ $(function () {
         }
     });
 });
-
-function saveMeal() {
-    if ($("#calories").val()=="") {
-        $("#calories").val(0)
-    }
-    save();
-}

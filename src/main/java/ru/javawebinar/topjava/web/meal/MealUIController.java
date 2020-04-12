@@ -15,6 +15,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.MealsUtil.convertMealUITo;
 import static ru.javawebinar.topjava.util.ValidationUtil.getStringJoinerErrors;
 
 @RestController
@@ -44,12 +45,12 @@ public class MealUIController extends AbstractMealController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public ResponseEntity<String> createOrUpdate(@Valid MealUITo mealUITo, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.unprocessableEntity().body(getStringJoinerErrors(result));
+            return getStringJoinerErrors(result);
         }
         if (mealUITo.isNew()) {
-            super.create(new Meal(mealUITo.getDateTime(), mealUITo.getDescription(), mealUITo.getCalories()));
+            super.create(convertMealUITo(mealUITo, null));
         } else {
-            super.update(new Meal(mealUITo.id(), mealUITo.getDateTime(), mealUITo.getDescription(), mealUITo.getCalories()), mealUITo.id());
+            super.update(convertMealUITo(mealUITo,mealUITo.id()),mealUITo.id());
         }
         return ResponseEntity.ok().build();
     }
