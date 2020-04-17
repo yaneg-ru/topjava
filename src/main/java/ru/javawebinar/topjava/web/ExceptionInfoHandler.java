@@ -68,6 +68,9 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
+        if (e.getMessage().contains("users_unique_email_idx")) {
+            return new ErrorInfo(req.getRequestURL(), errorType, "User with this email already exists");
+        }
         return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
     }
 }
