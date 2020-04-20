@@ -98,4 +98,15 @@ class ProfileRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    void registerWhenEmailAlrearyExist() throws Exception {
+        UserTo newTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL + "/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+
+    }
 }
