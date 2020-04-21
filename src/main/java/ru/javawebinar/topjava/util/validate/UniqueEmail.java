@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = UniqueFieldValidater.class)
 @Documented
 public @interface UniqueEmail {
-    String message() default "User with this email already exists";
+    String message() default "{fields.constrains.email.unique}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

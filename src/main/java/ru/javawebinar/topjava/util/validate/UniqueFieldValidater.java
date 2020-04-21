@@ -1,6 +1,7 @@
 package ru.javawebinar.topjava.util.validate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
@@ -25,23 +26,23 @@ public class UniqueFieldValidater implements ConstraintValidator<UniqueEmail, Ob
 
         UserTo userTo = (UserTo) value;
         User user = repository.getByEmail(userTo.getEmail());
+        AuthorizedUser authorizedUser = SecurityUtil.safeGet();
 
-        try {
+        if (authorizedUser!=null){
             int authUserUd = SecurityUtil.authUserId();
             if ((userTo.isNew() && user!=null && user.id()!=authUserUd) ||
                     (!userTo.isNew()) && user!=null && userTo.id()!=user.id()) {
                 allRight = false;
             }
-        } catch (Exception e) {
+        } else  {
             if (user!=null) {
                 allRight = false;
-
             }
         }
 
         if (!allRight) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate( "User with this email already exists" )
+            context.buildConstraintViolationWithTemplate( "{fields.constrains.email.unique}" )
                     .addPropertyNode( "email" ).addConstraintViolation();
         }
 

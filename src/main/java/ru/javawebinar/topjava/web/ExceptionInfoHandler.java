@@ -2,13 +2,18 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +26,9 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -43,18 +51,11 @@ public class ExceptionInfoHandler {
     }
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)  // 422
-    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class,  BindException.class})
+    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class,
+            HttpMessageNotReadableException.class, BindException.class, MethodArgumentNotValidException.class} )
     public ErrorInfo illegalRequestDataError(HttpServletRequest req, Exception e) {
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ErrorInfo illegalRestRequestDataError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
-    }
-
-
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
@@ -70,9 +71,22 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        if (e.getMessage().contains("users_unique_email_idx") || e.getMessage().contains("email already exists")) {
-            return new ErrorInfo(req.getRequestURL(), errorType, "User with this email already exists");
+
+        List<FieldError> errors = new ArrayList<>();
+        if (e instanceof MethodArgumentNotValidException) {
+            errors = (((MethodArgumentNotValidException) e).getBindingResult()).getFieldErrors();
+        };
+        if (e instanceof BindException) {
+            errors = (((BindException) e).getBindingResult()).getFieldErrors();
+        };
+
+        StringBuilder details = new StringBuilder();
+        for (FieldError error : errors) {
+            details.append(error.getField() + " - " + error.getDefaultMessage());
+            details.append(System.getProperty("line.separator"));
+            details.append("<br>");
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+
+        return new ErrorInfo(req.getRequestURL(), errorType, details.toString());
     }
 }

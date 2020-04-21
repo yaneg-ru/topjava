@@ -137,4 +137,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .with(userHttpBasic(USER)))
                 .andExpect(status().isUnprocessableEntity());
     }
+
+    @Test
+    void updateWithExceptionHandler() throws Exception {
+        Meal updated = MealTestData.getUpdated();
+        updated.setCalories(0);
+        perform(MockMvcRequestBuilders.put(REST_URL + MEAL1_ID).contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated))
+                .with(userHttpBasic(USER)))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }
